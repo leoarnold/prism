@@ -189,6 +189,24 @@ module Prism
       assert_equal(it_block_parameter_sexp, actual_ast.to_sexp)
     end
 
+    def test_erb
+      it_fixture_path = Pathname(__dir__).join("../../../test/prism/fixtures/erb.txt")
+
+      buffer = Parser::Source::Buffer.new(it_fixture_path)
+      buffer.source = it_fixture_path.read
+      actual_ast = Prism::Translation::Parser34.new.tokenize(buffer)[0]
+
+      it_block_parameter_sexp = parse_sexp {
+        s(:itblock,
+          s(:send, nil, :x), :it,
+          s(:lvar, :it))
+      }
+
+      p actual_ast.to_sexp
+
+      assert_equal(it_block_parameter_sexp, actual_ast.to_sexp)
+    end
+
     private
 
     def assert_equal_parses(fixture, compare_asts: true, compare_tokens: true, compare_comments: true)
